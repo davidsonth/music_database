@@ -4,56 +4,18 @@ from itertools import count
 import pymysql
 global user_name
 global pass_word
-user_name = 'root'
-pass_word = '' # !!! Enter MySQL password here before running
 LARGE_FONT = ("Verdana", 12)
-
-def register_user():
-    username_info = username.get()
-    password_info = password.get()
-
-    file=open(username_info, "w")
-    file.write(username_info+"\n")
-    file.write(password_info)
-    file.close()
-
-    username_entry.delete(0, END)
-    password_entry.delete(0,END)
-
-    Label(screen1, text="Registered!").pack()
-
-def register():
-    global username
-    global password
-    global username_entry
-    global password_entry
-    global screen1
-    screen1 = Toplevel(screen)
-    screen1.title("Register")
-    screen1.geometry("300x250")
-    username = StringVar()
-    password = StringVar()
-    Label(screen1, text="Enter details below").pack()
-    Label(screen1, text="").pack()
-    Label(screen1, text="Username ").pack()
-    username_entry = Entry(screen1, textvariable=username)
-    username_entry.pack()
-    Label(screen1, text="Password ").pack()
-    password_entry = Entry(screen1, textvariable=password)
-    password_entry.pack()
-    Label(screen1, text="").pack()
-
-    Button(screen1, text="Register", width=10, height=1, command=register_user).pack()
-
 
 def login():
     global screen2
-    screen2 = Toplevel(screen)
+    screen2 = Tk()
     screen2.title("Login")
     screen2.geometry("300x350")
-    Label(screen2, text="Enter details").pack()
+    Label(screen2, text="Enter Local Host Credentials").pack()
     Label(screen2, text="").pack()
 
+    global user_name
+    global pass_word
     global username_verify
     global password_verify
     global username_entry1
@@ -67,32 +29,40 @@ def login():
     username_entry1.pack()
     Label(screen2, text="").pack()
     Label(screen2, text="Password :").pack()
-    password_entry1 = Entry(screen2, textvariable=password_verify)
+    password_entry1 = Entry(screen2, textvariable=password_verify, show="*")
     password_entry1.pack()
     Label(screen2, text="").pack()
     Button(screen2, text="Login", width=10, height=1, command=login_verify).pack()
 
+    screen2.mainloop()
+
 def login_verify():
+    global invalid_label
+    try:
+        invalid_label.pack_forget()
+    except:
+        invalid_label = Label(screen2, text="")
     username1 = username_verify.get()
     password1 = password_verify.get()
-    username_entry1.delete(0,END)
-    password_entry1.delete(0,END)
+    username_entry1.delete(0, END)
+    password_entry1.delete(0, END)
+    global user_name
+    global pass_word
+    user_name = username1
+    pass_word = password1
+    try:
+        cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word, db='music_stats',
+                              charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+        login_success()
+    except:
+        invalid_label = Label(screen2, text="Invalid Credentials")
+        invalid_label.pack()
 
-    list_of_files = os.listdir()
-    if username1 in list_of_files:
-        file1 = open(username1, "r")
-        verify = file1.read().splitlines()
-        if password1 in verify:
-            screen2.destroy()
-            login_success()
-        else:
-            print("incorrect password")
-    else:
-        print("incorrect user")
+
+
 
 def login_success():
     screen2.destroy()
-    screen.destroy()
     session()
 
 def session():
@@ -216,9 +186,18 @@ def add_update():
     global artist_entry_delete
     global album_entry_delete
     global genre_entry_delete
+    global song_entry_update_from
+    global artist_entry_update_from
+    global album_entry_update_from
+    global genre_entry_update_from
+    global song_entry_update_to
+    global artist_entry_update_to
+    global album_entry_update_to
+    global genre_entry_update_to
+
     screen9 = Toplevel(screen8)
     screen9.title("Add, Update, or Delete")
-    screen9.geometry("400x600")
+    screen9.geometry("400x800")
     song = StringVar()
     album = StringVar()
     artist = StringVar()
@@ -227,6 +206,14 @@ def add_update():
     album_delete = StringVar()
     artist_delete = StringVar()
     genre_delete = StringVar()
+    song_entry_from = StringVar()
+    album_entry_from = StringVar()
+    artist_entry_from = StringVar()
+    genre_entry_from = StringVar()
+    song_entry_to = StringVar()
+    album_entry_to = StringVar()
+    artist_entry_to = StringVar()
+    genre_entry_to = StringVar()
     Label(screen9, text="Add a Song ").pack()
     Label(screen9, text="Song title: ").pack()
     song_entry = Entry(screen9, textvariable=song)
@@ -240,9 +227,7 @@ def add_update():
     Label(screen9, text="Genre: ").pack()
     genre_entry = Entry(screen9, textvariable=genre)
     genre_entry.pack()
-    Label(screen9, text="").pack()
     Button(screen9, text="Add Song", command=add_entry).pack()
-    Label(screen9, text="").pack()
 
     Label(screen9, text="Delete a Song ").pack()
     Label(screen9, text="Song title: ").pack()
@@ -257,9 +242,36 @@ def add_update():
     Label(screen9, text="Genre: ").pack()
     genre_entry_delete = Entry(screen9, textvariable=genre_delete)
     genre_entry_delete.pack()
-    Label(screen9, text="").pack()
     Button(screen9, text="Delete Song", command=delete_entry).pack()
+
+    Label(screen9, text="Update a Song ").pack()
+    Label(screen9, text="Old Song title: ").pack()
+    song_entry_update_from = Entry(screen9, textvariable=song_entry_from)
+    song_entry_update_from.pack()
+    Label(screen9, text="New Song title: ").pack()
+    song_entry_update_to = Entry(screen9, textvariable=song_entry_to)
+    song_entry_update_to.pack()
+    Label(screen9, text="Old Artist: ").pack()
+    artist_entry_update_from = Entry(screen9, textvariable=artist_entry_from)
+    artist_entry_update_from.pack()
+    Label(screen9, text="New Artist: ").pack()
+    artist_entry_update_to = Entry(screen9, textvariable=artist_entry_to)
+    artist_entry_update_to.pack()
+    Label(screen9, text="Old Album: ").pack()
+    album_entry_update_from = Entry(screen9, textvariable=album_entry_from)
+    album_entry_update_from.pack()
+    Label(screen9, text="New Album: ").pack()
+    album_entry_update_to = Entry(screen9, textvariable=album_entry_to)
+    album_entry_update_to.pack()
+    Label(screen9, text="Old Genre: ").pack()
+    genre_entry_update_from = Entry(screen9, textvariable=genre_entry_from)
+    genre_entry_update_from.pack()
+    Label(screen9, text="New Genre: ").pack()
+    genre_entry_update_to = Entry(screen9, textvariable=genre_entry_to)
+    genre_entry_update_to.pack()
+    Button(screen9, text="Update Song", command=update_entry).pack()
     Label(screen9, text="").pack()
+
     Button(screen9, text="Return to Menu", command=return_to_menu_add).pack()
 
 def add_entry():
@@ -395,6 +407,89 @@ def delete_entry():
     cnx.commit()
     cur.close()
 
+def update_entry():
+    song_entry_ = song_entry_update_from.get()
+    artist_entry_ = artist_entry_update_from.get()
+    album_entry_ = album_entry_update_from.get()
+    genre_entry_ = genre_entry_update_from.get()
+    song_entry_to = song_entry_update_to.get()
+    artist_entry_to = artist_entry_update_to.get()
+    album_entry_to = album_entry_update_to.get()
+    genre_entry_to = genre_entry_update_to.get()
+    try:
+        cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word,
+                              db='music_stats', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+    except FileNotFoundError:
+        print('didnt connect')
+
+    cur = cnx.cursor()
+
+    cnx.commit()
+    cur.close()
+
+    cur = cnx.cursor()
+    stmt_select = "update song_entry set song_name = '" + song_entry_to + "', artist_name = '" + artist_entry_to + \
+                  "', genre_name = '" + genre_entry_to + "', album_name = '" + album_entry_to + \
+                  "' where song_name = '" + song_entry_ +"' and artist_name = '" + artist_entry_ +  "' and genre_name = '" + \
+                  genre_entry_ + "' and album_name = '" + album_entry_ + "'"
+    print(stmt_select)
+    cur.execute(stmt_select)
+    cnx.commit()
+    cur.close()
+
+    cur = cnx.cursor()
+    stmt_select = "insert into genre (genre_name) values ('" + genre_entry_to + "')"
+    try:
+        cur.execute(stmt_select)
+    except:
+        print("this genre is found!")
+    print(stmt_select)
+    cnx.commit()
+    cur.close()
+
+    cur = cnx.cursor()
+    stmt_select = "insert into artist (artist_name) values ('" + artist_entry_to + "')"
+    try:
+        cur.execute(stmt_select)
+    except:
+        print("this artist is found!")
+    print(stmt_select)
+    cnx.commit()
+    cur.close()
+
+    cur = cnx.cursor()
+    stmt_select = "insert into album (album_name, artist_name) values ('" + album_entry_to + "', '" + artist_entry_to + "')"
+    try:
+        cur.execute(stmt_select)
+    except:
+        print("this album is found!")
+    print(stmt_select)
+    cnx.commit()
+    cur.close()
+
+    cur = cnx.cursor()
+    stmt_select = "select max(song_id) from song"
+    cur.execute(stmt_select)
+    rows = cur.fetchall()
+    try:
+        for row in rows:
+            count2 = int(str(row)[16:-1])
+    except:
+        count2 = 0
+    cnx.commit()
+    cur.close()
+
+    cur = cnx.cursor()
+    stmt_select = "insert into song (song_id, song_name, artist_name, genre_name, album_name) " \
+                  "values ('" + str(count2 + 1) + "', '" + song_entry_to + "', '" + artist_entry_to + "', '" \
+                  + genre_entry_to + "', '" + album_entry_to + "')"
+
+    cur.execute(stmt_select)
+    cnx.commit()
+    cur.close()
+
+
+
 
 
 def return_to_menu_add():
@@ -402,21 +497,10 @@ def return_to_menu_add():
 
 def log_out():
     screen8.destroy()
-    main_screen()
+    login()
 
 
-def main_screen():
-    global screen
-    screen = Tk()
-    screen.geometry("300x250")
-    screen.title("Login to Music Stats")
-    Label(text="Login", bg="white", width="300", height="2", font=LARGE_FONT).pack()
-    Label(text="").pack()
-    Button(text="Login", height="2", width="30", command=login).pack()
-    Label(text="").pack()
-    Button(text="Register", height="2", width="30", command=register).pack()
 
-    screen.mainloop()
 
-main_screen()
+login()
 
