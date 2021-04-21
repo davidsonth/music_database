@@ -27,16 +27,20 @@ def login():
     Label(screen2, text="Username :").pack()
     username_entry1 = Entry(screen2, textvariable=username_verify)
     username_entry1.pack()
+    username_entry1.bind('<Return>', login_verify) #
     Label(screen2, text="").pack()
     Label(screen2, text="Password :").pack()
     password_entry1 = Entry(screen2, textvariable=password_verify, show="*")
     password_entry1.pack()
+    password_entry1.bind('<Return>', login_verify) #
     Label(screen2, text="").pack()
-    Button(screen2, text="Login", width=10, height=1, command=login_verify).pack()
+    btn = Button(screen2, text="Login", width=10, height=1) #
+    btn.bind('<Button-1>', login_verify) #
+    btn.pack() #
 
     screen2.mainloop()
 
-def login_verify():
+def login_verify(event):
     global invalid_label
     try:
         invalid_label.pack_forget()
@@ -72,7 +76,9 @@ def session():
     screen8.geometry("400x400")
     Label(screen8, text="Welcome to Music Stats").pack()
     Button(screen8, text="Add or Delete", command=add_update).pack()
-    Button(screen8, text="Search Music", command=view_stats).pack()
+    btn = Button(screen8, text="Search Music") #
+    btn.bind('<Button-1>', view_stats) #
+    btn.pack()
     Button(screen8, text="Log Out", command=log_out).pack()
 
     screen8.mainloop()
