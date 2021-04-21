@@ -76,9 +76,7 @@ def session():
     screen8.geometry("400x400")
     Label(screen8, text="Welcome to Music Stats").pack()
     Button(screen8, text="Add or Delete", command=add_update).pack()
-    btn = Button(screen8, text="Search Music") #
-    btn.bind('<Button-1>', view_stats) #
-    btn.pack()
+    Button(screen8, text="Search Music", command=view_stats).pack()
     Button(screen8, text="Log Out", command=log_out).pack()
 
     screen8.mainloop()
@@ -95,14 +93,17 @@ def view_stats():
     Label(screen10, text="Look Up Music ").pack()
     Label(screen10, text="").pack()
     song_entry1 = Entry(screen10, textvariable=search)
+    song_entry1.bind('<Return>', search_for) #
     song_entry1.pack()
     Label(screen10, text="").pack()
-    Button(screen10, text="Search", command=search_for).pack()
+    btn = Button(screen10, text="Search") # 
+    btn.bind('<Button-1>', search_for) #
+    btn.pack() #
     Label(screen10, text="").pack()
     Button(screen10, text="Return to Menu", command=return_to_menu_view).pack()
 
 
-def search_for():
+def search_for(event):
     no_artists = False
     no_songs = False
     no_albums = False
