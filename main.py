@@ -117,7 +117,8 @@ def search_for(event):
         print('didnt connect')
 
     cur = cnx.cursor()
-    stmt_select = "select * from song where song_name=" + "'" + search + "' or album_name = '" + search + "'"
+    # stmt_select = "select * from song where song_name=" + "'" + search + "' or album_name = '" + search + "'"
+    stmt_select = f"select * from song where song_name = {search} or album_name = {search}"
     print(stmt_select)
     try:
         cur.execute(stmt_select)
@@ -136,7 +137,8 @@ def search_for(event):
     print(searches)
     cur.close()
     cur = cnx.cursor()
-    stmt_select = "select * from album where album_name=" + "'" + search + "'"
+    # stmt_select = "select * from album where album_name=" + "'" + search + "'"
+    stmt_select = f"select * from album where album_name = {search}"
     try:
         cur.execute(stmt_select)
         for row in cur:
@@ -154,7 +156,8 @@ def search_for(event):
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "select * from artist where artist_name=" + "'" + search + "'"
+    # stmt_select = "select * from artist where artist_name=" + "'" + search + "'"
+    stmt_select = f"select * from artist where artist_name = {search}"
     print(stmt_select)
     try:
         cur.execute(stmt_select)
@@ -204,7 +207,7 @@ def add_update():
 
     screen9 = Toplevel(screen8)
     screen9.title("Add, Update, or Delete")
-    screen9.geometry("400x800")
+    screen9.geometry("500x450")
     song = StringVar()
     album = StringVar()
     artist = StringVar()
@@ -222,11 +225,12 @@ def add_update():
     artist_entry_to = StringVar()
     genre_entry_to = StringVar()
     
+    Label(screen9, text="Add to, Remove from, or Modify Stored Songs").pack()
     f0 = Frame(screen9)
     f0.pack()
     
     f1 = Frame(f0)
-    f1.pack(side = TOP)
+    f1.pack(side = LEFT, expand = 1)
     Label(f1, text="Add a Song ").pack()
     Label(f1, text="Song title: ").pack()
     song_entry = Entry(f1, textvariable=song)
@@ -243,7 +247,7 @@ def add_update():
     Button(f1, text="Add Song", command=add_entry).pack()
     
     f2 = Frame(f0)
-    f2.pack(side = TOP)
+    f2.pack(side = LEFT, expand = 1)
     Label(f2, text="Delete a Song ").pack()
     Label(f2, text="Song title: ").pack()
     song_entry_delete = Entry(f2, textvariable=song_delete)
@@ -260,7 +264,7 @@ def add_update():
     Button(f2, text="Delete Song", command=delete_entry).pack()
     
     f3 = Frame(f0)
-    f3.pack(side = RIGHT)
+    f3.pack(side = LEFT, expand = 1)
     Label(f3, text="Update a Song ").pack()
     Label(f3, text="Old Song title: ").pack()
     song_entry_update_from = Entry(f3, textvariable=song_entry_from)
@@ -291,12 +295,16 @@ def add_update():
 
     Button(screen9, text="Return to Menu", command=return_to_menu_add).pack()
 
+def clean_entry(entry):
+    return "'" + entry.get().replace("'", "") + "'"
+
 def add_entry():
 
-    song_entry_ = song_entry.get()
-    artist_entry_ = artist_entry.get()
-    album_entry_ = album_entry.get()
-    genre_entry_ = genre_entry.get()
+    song_entry_ = clean_entry(song_entry)
+    artist_entry_ = clean_entry(artist_entry)
+    album_entry_ = clean_entry(album_entry)
+    genre_entry_ = clean_entry(genre_entry)
+    
     try:
         cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word,
                               db='music_stats', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
@@ -310,6 +318,7 @@ def add_entry():
     try:
         for row in rows:
             count = int(str(row)[17:-1])
+            print(count) #TEST
     except:
         count = 0
 
@@ -317,9 +326,11 @@ def add_entry():
     cur.close()
 
     cur = cnx.cursor()
+    # stmt_select = "insert into song_entry (entry_id, song_name, artist_name, album_name, genre_name) " \
+    #               "values (" + str(count + 1) + "," +"'" +song_entry_+"', '"+artist_entry_ + "', '" \
+    #               + album_entry_ + "', '" + genre_entry_ + "')"
     stmt_select = "insert into song_entry (entry_id, song_name, artist_name, album_name, genre_name) " \
-                  "values (" + str(count + 1) + "," +"'" +song_entry_+"', '"+artist_entry_ + "', '" \
-                  + album_entry_ + "', '" + genre_entry_ + "')"
+        f"values ({str(count + 1)}, {song_entry_}, {artist_entry_}, {album_entry_}, {genre_entry_})" 
     cur.execute(stmt_select)
 
     print(stmt_select)
@@ -331,7 +342,9 @@ def add_entry():
 
 
     cur = cnx.cursor()
-    stmt_select = "insert into genre (genre_name) values ('" + genre_entry_ + "')"
+    # stmt_select = "insert into genre (genre_name) values ('" + genre_entry_ + "')"
+    stmt_select = f"insert into genre (genre_name) values ({genre_entry_})" 
+
     try:
         cur.execute(stmt_select)
     except:
@@ -341,7 +354,9 @@ def add_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into artist (artist_name) values ('" + artist_entry_ + "')"
+    # stmt_select = "insert into artist (artist_name) values ('" + artist_entry_ + "')"
+    stmt_select = f"insert into artist (artist_name) values ({artist_entry_})" 
+
     try:
         cur.execute(stmt_select)
     except:
@@ -352,7 +367,8 @@ def add_entry():
 
 
     cur = cnx.cursor()
-    stmt_select = "insert into album (album_name, artist_name) values ('" + album_entry_ + "', '" + artist_entry_ + "')"
+    # stmt_select = "insert into album (album_name, artist_name) values ('" + album_entry_ + "', '" + artist_entry_ + "')"
+    stmt_select = f"insert into album (album_name, artist_name) values ({album_entry_}, {artist_entry_})" 
     try:
         cur.execute(stmt_select)
     except:
@@ -378,32 +394,27 @@ def add_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
-                  "values ('" + str(count2 + 1) + "', '" + song_entry_ + "', '" + artist_entry_ + "', '" \
-                  + album_entry_ + "', '" + genre_entry_ + "')"
-
+    # stmt_select = f"insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
+    #               "values ('" + str(count2 + 1) + "', '" + song_entry_ + "', '" + artist_entry_ + "', '" \
+    #               + album_entry_ + "', '" + genre_entry_ + "')"
+    stmt_select = f"insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
+        f"values ({str(count2 + 1)}, {song_entry_}, {artist_entry_}, {album_entry_}, {genre_entry_})" 
+    
     cur.execute(stmt_select)
     cnx.commit()
     cur.close()
 
 def delete_entry():
-    song_entry_ = "'" + song_entry_delete.get() + "'" #
-    artist_entry_ = "'" + artist_entry_delete.get() + "'" #
-    album_entry_ = "'" + album_entry_delete.get() + "'" #
-    genre_entry_ = "'" + genre_entry_delete.get() + "'" #
+    song_entry_ = clean_entry(song_entry_delete) #
+    artist_entry_ = clean_entry(artist_entry_delete) #
+    album_entry_ = clean_entry(album_entry_delete) #
+    genre_entry_ = clean_entry(genre_entry_delete) #
     try:
         cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word,
                               db='music_stats', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
     except FileNotFoundError:
         print('didnt connect')
 
-    # cur = cnx.cursor()
-    # stmt_select = "select max(entry_id) from song_entry"
-    # cur.execute(stmt_select)
-    # rows = cur.fetchall()
-
-    # cnx.commit()
-    # cur.close()
 
     cur = cnx.cursor()
     # stmt_select = "delete from song_entry where (song_name = '" + song_entry_ + \
@@ -420,20 +431,20 @@ def delete_entry():
     # stmt_select = "delete from song where (song_name = '" + song_entry_ + \
     #               "' and  artist_name = '" + artist_entry_ + "' and album_name = '"\
     #               + album_entry_ + "' and genre_name = '" + genre_entry_ + "')"
-
+    
     # cur.execute(stmt_select)
     # cnx.commit()
     # cur.close()
 
 def update_entry():
-    song_entry_ = song_entry_update_from.get()
-    artist_entry_ = artist_entry_update_from.get()
-    album_entry_ = album_entry_update_from.get()
-    genre_entry_ = genre_entry_update_from.get()
-    song_entry_to = song_entry_update_to.get()
-    artist_entry_to = artist_entry_update_to.get()
-    album_entry_to = album_entry_update_to.get()
-    genre_entry_to = genre_entry_update_to.get()
+    song_entry_ = clean_entry(song_entry_update_from)
+    artist_entry_ = clean_entry(artist_entry_update_from)
+    album_entry_ = clean_entry(album_entry_update_from)
+    genre_entry_ = clean_entry(genre_entry_update_from)
+    song_entry_to = clean_entry(song_entry_update_to)
+    artist_entry_to = clean_entry(artist_entry_update_to)
+    album_entry_to = clean_entry(album_entry_update_to)
+    genre_entry_to = clean_entry(genre_entry_update_to)
     try:
         cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word,
                               db='music_stats', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
@@ -446,17 +457,22 @@ def update_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "update song_entry set song_name = '" + song_entry_to + "', artist_name = '" + artist_entry_to + \
-                  "', album_name = '" + album_entry_to + "', genre_name = '" + genre_entry_to + \
-                  "' where song_name = '" + song_entry_ +"' and artist_name = '" + artist_entry_ +  "' and album_name = '" + \
-                  album_entry_ + "' and genre_name = '" + genre_entry_ + "'"
+    # stmt_select = "update song_entry set song_name = '" + song_entry_to + "', artist_name = '" + artist_entry_to + \
+    #               "', album_name = '" + album_entry_to + "', genre_name = '" + genre_entry_to + \
+    #               "' where song_name = '" + song_entry_ +"' and artist_name = '" + artist_entry_ +  "' and album_name = '" + \
+    #               album_entry_ + "' and genre_name = '" + genre_entry_ + "'"
+    stmt_select = f"update song_entry set song_name = {song_entry_to}, artist_name = {artist_entry_to}, " \
+        f"album_name = {album_entry_to}, genre_name = {genre_entry_to} where song_name = {song_entry_}, " \
+        f"and artist_name = {artist_entry_}, and album_name = {album_entry_}, and genre_name = {genre_entry_}"
+
     print(stmt_select)
     cur.execute(stmt_select)
     cnx.commit()
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into genre (genre_name) values ('" + genre_entry_to + "')"
+    # stmt_select = "insert into genre (genre_name) values ('" + genre_entry_to + "')"
+    stmt_select = f"insert into genre (genre_name) values ({genre_entry_to})"
     try:
         cur.execute(stmt_select)
     except:
@@ -466,7 +482,8 @@ def update_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into artist (artist_name) values ('" + artist_entry_to + "')"
+    # stmt_select = "insert into artist (artist_name) values ('" + artist_entry_to + "')"
+    stmt_select = f"insert into artist (artist_name) values ({artist_entry_to})"
     try:
         cur.execute(stmt_select)
     except:
@@ -476,7 +493,9 @@ def update_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into album (album_name, artist_name) values ('" + album_entry_to + "', '" + artist_entry_to + "')"
+    # stmt_select = "insert into album (album_name, artist_name) values ('" + album_entry_to + "', '" + artist_entry_to + "')"
+    stmt_select = f"insert into album (album_name, artist_name) values ({album_entry_to}, {artist_entry_to})"
+
     try:
         cur.execute(stmt_select)
     except:
@@ -498,9 +517,11 @@ def update_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
-                  "values ('" + str(count2 + 1) + "', '" + song_entry_to + "', '" + artist_entry_to + "', '" \
-                  + album_entry_to + "', '" + genre_entry_to + "')"
+    # stmt_select = "insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
+    #               "values ('" + str(count2 + 1) + "', '" + song_entry_to + "', '" + artist_entry_to + "', '" \
+    #               + album_entry_to + "', '" + genre_entry_to + "')"
+    stmt_select = f"insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
+                  "values ({str(count2 + 1)}, {song_entry_to}, {artist_entry_to}, {album_entry_to}, {genre_entry_to})"
 
     cur.execute(stmt_select)
     cnx.commit()
