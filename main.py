@@ -126,7 +126,7 @@ def search_for(event):
             label1.pack()
             searches.append(label1)
             label2 = Label(screen10, text=str(row).replace("'song_name':", "").replace("'album_name':", "")
-                           .replace("'artist_name':", "").replace("'genre_name':", "").replace("'song_id':", "")
+                           .replace("'artist_name':", "").replace("'song_id':", "").replace("'genre_name':", "")
                            .replace("{", "").replace("}", "")[3:] + "  SONG")
             label2.pack()
             searches.append(label2)
@@ -221,63 +221,73 @@ def add_update():
     album_entry_to = StringVar()
     artist_entry_to = StringVar()
     genre_entry_to = StringVar()
-    Label(screen9, text="Add a Song ").pack()
-    Label(screen9, text="Song title: ").pack()
-    song_entry = Entry(screen9, textvariable=song)
+    
+    f0 = Frame(screen9)
+    f0.pack()
+    
+    f1 = Frame(f0)
+    f1.pack(side = TOP)
+    Label(f1, text="Add a Song ").pack()
+    Label(f1, text="Song title: ").pack()
+    song_entry = Entry(f1, textvariable=song)
     song_entry.pack()
-    Label(screen9, text="Artist: ").pack()
-    artist_entry = Entry(screen9, textvariable=artist)
+    Label(f1, text="Artist: ").pack()
+    artist_entry = Entry(f1, textvariable=artist)
     artist_entry.pack()
-    Label(screen9, text="Album: ").pack()
-    album_entry = Entry(screen9, textvariable=album)
+    Label(f1, text="Album: ").pack()
+    album_entry = Entry(f1, textvariable=album)
     album_entry.pack()
-    Label(screen9, text="Genre: ").pack()
-    genre_entry = Entry(screen9, textvariable=genre)
+    Label(f1, text="Genre: ").pack()
+    genre_entry = Entry(f1, textvariable=genre)
     genre_entry.pack()
-    Button(screen9, text="Add Song", command=add_entry).pack()
-
-    Label(screen9, text="Delete a Song ").pack()
-    Label(screen9, text="Song title: ").pack()
-    song_entry_delete = Entry(screen9, textvariable=song_delete)
+    Button(f1, text="Add Song", command=add_entry).pack()
+    
+    f2 = Frame(f0)
+    f2.pack(side = TOP)
+    Label(f2, text="Delete a Song ").pack()
+    Label(f2, text="Song title: ").pack()
+    song_entry_delete = Entry(f2, textvariable=song_delete)
     song_entry_delete.pack()
-    Label(screen9, text="Artist: ").pack()
-    artist_entry_delete = Entry(screen9, textvariable=artist_delete)
+    Label(f2, text="Artist: ").pack()
+    artist_entry_delete = Entry(f2, textvariable=artist_delete)
     artist_entry_delete.pack()
-    Label(screen9, text="Album: ").pack()
-    album_entry_delete = Entry(screen9, textvariable=album_delete)
+    Label(f2, text="Album: ").pack()
+    album_entry_delete = Entry(f2, textvariable=album_delete)
     album_entry_delete.pack()
-    Label(screen9, text="Genre: ").pack()
-    genre_entry_delete = Entry(screen9, textvariable=genre_delete)
+    Label(f2, text="Genre: ").pack()
+    genre_entry_delete = Entry(f2, textvariable=genre_delete)
     genre_entry_delete.pack()
-    Button(screen9, text="Delete Song", command=delete_entry).pack()
-
-    Label(screen9, text="Update a Song ").pack()
-    Label(screen9, text="Old Song title: ").pack()
-    song_entry_update_from = Entry(screen9, textvariable=song_entry_from)
+    Button(f2, text="Delete Song", command=delete_entry).pack()
+    
+    f3 = Frame(f0)
+    f3.pack(side = RIGHT)
+    Label(f3, text="Update a Song ").pack()
+    Label(f3, text="Old Song title: ").pack()
+    song_entry_update_from = Entry(f3, textvariable=song_entry_from)
     song_entry_update_from.pack()
-    Label(screen9, text="New Song title: ").pack()
-    song_entry_update_to = Entry(screen9, textvariable=song_entry_to)
+    Label(f3, text="New Song title: ").pack()
+    song_entry_update_to = Entry(f3, textvariable=song_entry_to)
     song_entry_update_to.pack()
-    Label(screen9, text="Old Artist: ").pack()
-    artist_entry_update_from = Entry(screen9, textvariable=artist_entry_from)
+    Label(f3, text="Old Artist: ").pack()
+    artist_entry_update_from = Entry(f3, textvariable=artist_entry_from)
     artist_entry_update_from.pack()
-    Label(screen9, text="New Artist: ").pack()
-    artist_entry_update_to = Entry(screen9, textvariable=artist_entry_to)
+    Label(f3, text="New Artist: ").pack()
+    artist_entry_update_to = Entry(f3, textvariable=artist_entry_to)
     artist_entry_update_to.pack()
-    Label(screen9, text="Old Album: ").pack()
-    album_entry_update_from = Entry(screen9, textvariable=album_entry_from)
+    Label(f3, text="Old Album: ").pack()
+    album_entry_update_from = Entry(f3, textvariable=album_entry_from)
     album_entry_update_from.pack()
-    Label(screen9, text="New Album: ").pack()
-    album_entry_update_to = Entry(screen9, textvariable=album_entry_to)
+    Label(f3, text="New Album: ").pack()
+    album_entry_update_to = Entry(f3, textvariable=album_entry_to)
     album_entry_update_to.pack()
-    Label(screen9, text="Old Genre: ").pack()
-    genre_entry_update_from = Entry(screen9, textvariable=genre_entry_from)
+    Label(f3, text="Old Genre: ").pack()
+    genre_entry_update_from = Entry(f3, textvariable=genre_entry_from)
     genre_entry_update_from.pack()
-    Label(screen9, text="New Genre: ").pack()
-    genre_entry_update_to = Entry(screen9, textvariable=genre_entry_to)
+    Label(f3, text="New Genre: ").pack()
+    genre_entry_update_to = Entry(f3, textvariable=genre_entry_to)
     genre_entry_update_to.pack()
-    Button(screen9, text="Update Song", command=update_entry).pack()
-    Label(screen9, text="").pack()
+    Button(f3, text="Update Song", command=update_entry).pack()
+    Label(f3, text="").pack()
 
     Button(screen9, text="Return to Menu", command=return_to_menu_add).pack()
 
@@ -307,7 +317,7 @@ def add_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into song_entry (entry_id, song_name, artist_name, genre_name, album_name) " \
+    stmt_select = "insert into song_entry (entry_id, song_name, artist_name, album_name, genre_name) " \
                   "values (" + str(count + 1) + "," +"'" +song_entry_+"', '"+artist_entry_ + "', '" \
                   + album_entry_ + "', '" + genre_entry_ + "')"
     cur.execute(stmt_select)
@@ -368,51 +378,52 @@ def add_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into song (song_id, song_name, artist_name, genre_name, album_name) " \
+    stmt_select = "insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
                   "values ('" + str(count2 + 1) + "', '" + song_entry_ + "', '" + artist_entry_ + "', '" \
-                  + genre_entry_ + "', '" + album_entry_ + "')"
+                  + album_entry_ + "', '" + genre_entry_ + "')"
 
     cur.execute(stmt_select)
     cnx.commit()
     cur.close()
 
 def delete_entry():
-    song_entry_ = song_entry_delete.get()
-    artist_entry_ = artist_entry_delete.get()
-    album_entry_ = album_entry_delete.get()
-    genre_entry_ = genre_entry_delete.get()
+    song_entry_ = "'" + song_entry_delete.get() + "'" #
+    artist_entry_ = "'" + artist_entry_delete.get() + "'" #
+    album_entry_ = "'" + album_entry_delete.get() + "'" #
+    genre_entry_ = "'" + genre_entry_delete.get() + "'" #
     try:
         cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word,
                               db='music_stats', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
     except FileNotFoundError:
         print('didnt connect')
 
-    cur = cnx.cursor()
-    stmt_select = "select max(entry_id) from song_entry"
-    cur.execute(stmt_select)
-    rows = cur.fetchall()
+    # cur = cnx.cursor()
+    # stmt_select = "select max(entry_id) from song_entry"
+    # cur.execute(stmt_select)
+    # rows = cur.fetchall()
 
-    cnx.commit()
-    cur.close()
+    # cnx.commit()
+    # cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "delete from song_entry where (song_name = '" + song_entry_ + \
-                  "' and  artist_name = '" + artist_entry_ + "' and genre_name = '"\
-                  + genre_entry_ + "' and album_name = '" + album_entry_ + "')"
+    # stmt_select = "delete from song_entry where (song_name = '" + song_entry_ + \
+    #               "' and  artist_name = '" + artist_entry_ + "' and album_name = '"\
+    #               + album_entry_ + "' and genre_name = '" + genre_entry_ + "')"
+    stmt_select = f"call delete_entry_proc({song_entry_}, {artist_entry_}, {album_entry_}, {genre_entry_})"
     print(stmt_select)
     cur.execute(stmt_select)
     cnx.commit()
     cur.close()
 
 
-    cur = cnx.cursor()
-    stmt_select = "delete from song where (song_name = '" + song_entry_ + \
-                  "' and  artist_name = '" + artist_entry_ + "' and genre_name = '"\
-                  + genre_entry_ + "' and album_name = '" + album_entry_ + "')"
+    # cur = cnx.cursor()
+    # stmt_select = "delete from song where (song_name = '" + song_entry_ + \
+    #               "' and  artist_name = '" + artist_entry_ + "' and album_name = '"\
+    #               + album_entry_ + "' and genre_name = '" + genre_entry_ + "')"
 
-    cur.execute(stmt_select)
-    cnx.commit()
-    cur.close()
+    # cur.execute(stmt_select)
+    # cnx.commit()
+    # cur.close()
 
 def update_entry():
     song_entry_ = song_entry_update_from.get()
@@ -436,9 +447,9 @@ def update_entry():
 
     cur = cnx.cursor()
     stmt_select = "update song_entry set song_name = '" + song_entry_to + "', artist_name = '" + artist_entry_to + \
-                  "', genre_name = '" + genre_entry_to + "', album_name = '" + album_entry_to + \
-                  "' where song_name = '" + song_entry_ +"' and artist_name = '" + artist_entry_ +  "' and genre_name = '" + \
-                  genre_entry_ + "' and album_name = '" + album_entry_ + "'"
+                  "', album_name = '" + album_entry_to + "', genre_name = '" + genre_entry_to + \
+                  "' where song_name = '" + song_entry_ +"' and artist_name = '" + artist_entry_ +  "' and album_name = '" + \
+                  album_entry_ + "' and genre_name = '" + genre_entry_ + "'"
     print(stmt_select)
     cur.execute(stmt_select)
     cnx.commit()
@@ -487,9 +498,9 @@ def update_entry():
     cur.close()
 
     cur = cnx.cursor()
-    stmt_select = "insert into song (song_id, song_name, artist_name, genre_name, album_name) " \
+    stmt_select = "insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
                   "values ('" + str(count2 + 1) + "', '" + song_entry_to + "', '" + artist_entry_to + "', '" \
-                  + genre_entry_to + "', '" + album_entry_to + "')"
+                  + album_entry_to + "', '" + genre_entry_to + "')"
 
     cur.execute(stmt_select)
     cnx.commit()
