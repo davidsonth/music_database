@@ -109,7 +109,8 @@ def search_for(event):
     no_albums = False
     for i in searches:
         i.destroy()
-    search = song_entry1.get()
+    #search = song_entry1
+    search = clean_entry(song_entry1)
     try:
         cnx = pymysql.connect(host='localhost', user=user_name, password=pass_word, db='music_stats', charset='utf8mb4',
                               cursorclass=pymysql.cursors.DictCursor)
@@ -318,7 +319,6 @@ def add_entry():
     try:
         for row in rows:
             count = int(str(row)[17:-1])
-            print(count) #TEST
     except:
         count = 0
 
@@ -462,8 +462,8 @@ def update_entry():
     #               "' where song_name = '" + song_entry_ +"' and artist_name = '" + artist_entry_ +  "' and album_name = '" + \
     #               album_entry_ + "' and genre_name = '" + genre_entry_ + "'"
     stmt_select = f"update song_entry set song_name = {song_entry_to}, artist_name = {artist_entry_to}, " \
-        f"album_name = {album_entry_to}, genre_name = {genre_entry_to} where song_name = {song_entry_}, " \
-        f"and artist_name = {artist_entry_}, and album_name = {album_entry_}, and genre_name = {genre_entry_}"
+        f"album_name = {album_entry_to}, genre_name = {genre_entry_to} where song_name = {song_entry_} " \
+        f"and artist_name = {artist_entry_} and album_name = {album_entry_} and genre_name = {genre_entry_}"
 
     print(stmt_select)
     cur.execute(stmt_select)
@@ -520,8 +520,13 @@ def update_entry():
     # stmt_select = "insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
     #               "values ('" + str(count2 + 1) + "', '" + song_entry_to + "', '" + artist_entry_to + "', '" \
     #               + album_entry_to + "', '" + genre_entry_to + "')"
-    stmt_select = f"insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
-                  "values ({str(count2 + 1)}, {song_entry_to}, {artist_entry_to}, {album_entry_to}, {genre_entry_to})"
+    # stmt_select = f"insert into song (song_id, song_name, artist_name, album_name, genre_name) " \
+    #               f"values ({str(count2 + 1)}, {song_entry_to}, {artist_entry_to}, {album_entry_to}, {genre_entry_to})"
+
+    stmt_select = f"update song set song_name = {song_entry_to}, artist_name = {artist_entry_to}, " \
+        f"album_name = {album_entry_to}, genre_name = {genre_entry_to} where song_name = {song_entry_} " \
+        f"and artist_name = {artist_entry_} and album_name = {album_entry_} and genre_name = {genre_entry_}"
+
 
     cur.execute(stmt_select)
     cnx.commit()
